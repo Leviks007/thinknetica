@@ -10,8 +10,7 @@ import (
 )
 
 func main() {
-	a := 2
-	_ = a
+
 	searchKeyword := flag.String("s", "", "Параметр поиска")
 	flag.Parse()
 	urls := getURLs()
