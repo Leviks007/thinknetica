@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
-	"lesson2/GoSearch/pkg/crawler"
-	"lesson2/GoSearch/pkg/crawler/spider"
+	"lesson2/pkg/crawler"
+	"lesson2/pkg/crawler/spider"
 	"log"
 	"strings"
 )

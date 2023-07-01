@@ -1,8 +1,6 @@
 package membot
 
-import (
-	"lesson2/GoSearch/pkg/crawler"
-)
+import "lesson2/pkg/crawler"
 
 // Service - имитация служба поискового робота.
 type Service struct{}
