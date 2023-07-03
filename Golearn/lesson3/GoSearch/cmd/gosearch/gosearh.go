@@ -7,6 +7,7 @@ import (
 	"lesson3/GoSearch/pkg/crawler/spider"
 	indexDoc "lesson3/GoSearch/pkg/index"
 	"log"
+	"sort"
 )
 
 func main() {
@@ -15,20 +16,18 @@ func main() {
 	flag.Parse()
 	urls := getURLs()
 	documents := scanWebsites(urls)
-	index := indexDoc.NewIndex()
+	index := indexDoc.New()
 	for i := range documents {
 		index.AddDocument(&documents[i])
 	}
-
+	sort.Sort(index)
 	if *searchKeyword != "" {
 		printMatchingURLs(getDocByWord(index, *searchKeyword))
 	}
-
 }
 
 func getURLs() []string {
 	return []string{"https://go.dev", "https://golang.org"}
-
 }
 
 func scanWebsites(urls []string) []crawler.Document {
@@ -42,14 +41,11 @@ func scanWebsites(urls []string) []crawler.Document {
 			continue
 		}
 		documents = append(documents, doc...)
-
 	}
-
 	return documents
 }
 
 func getDocByWord(idx *indexDoc.Index, searchKeyword string) []*crawler.Document {
-
 	IDs := idx.Search(searchKeyword)
 	return idx.GetDocsByID(IDs)
 }
