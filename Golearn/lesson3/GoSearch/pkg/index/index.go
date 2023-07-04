@@ -30,15 +30,18 @@ func New() *Index {
 	}
 }
 
-func (idx *Index) AddDocument(doc *crawler.Document) {
-	words := strings.Fields(doc.Title)
-	for _, word := range words {
-		word = strings.ToLower(word)
-		if !findElement(idx.indexMap[word], doc.ID) {
-			idx.indexMap[word] = append(idx.indexMap[word], doc.ID)
+func (idx *Index) AddDocuments(docs []crawler.Document) {
+	idx.documents = make([]*crawler.Document, len(docs))
+	for i, doc := range docs {
+		idx.documents[i] = &docs[i]
+		words := strings.Fields(doc.Title)
+		for _, word := range words {
+			word = strings.ToLower(word)
+			if !findElement(idx.indexMap[word], doc.ID) {
+				idx.indexMap[word] = append(idx.indexMap[word], doc.ID)
+			}
 		}
 	}
-	idx.documents = append(idx.documents, doc)
 }
 
 func (idx *Index) Search(word string) []int {

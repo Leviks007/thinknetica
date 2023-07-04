@@ -17,10 +17,9 @@ func main() {
 	urls := getURLs()
 	documents := scanWebsites(urls)
 	index := indexDoc.New()
-	for i := range documents {
-		index.AddDocument(&documents[i])
-	}
+	index.AddDocuments(documents)
 	sort.Sort(index)
+
 	if *searchKeyword != "" {
 		printMatchingURLs(getDocByWord(index, *searchKeyword))
 	}
