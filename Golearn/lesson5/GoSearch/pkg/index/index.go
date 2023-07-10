@@ -71,18 +71,12 @@ func findElement(arr []int, value int) bool {
 	return false
 }
 
-func GetIndexFromFile(r io.Reader) (*Index, error) {
+func GetIndexFromFile(r io.Reader) ([]byte, error) {
 	fileData, err := io.ReadAll(r)
 	if err != nil {
 		return nil, err
 	}
-
-	var idx Index
-	err = json.Unmarshal(fileData, &idx)
-	if err != nil {
-		return nil, err
-	}
-	return &idx, nil
+	return fileData, err
 }
 
 func (idx *Index) WriteIndexToJson(w io.Writer) error {
@@ -92,4 +86,8 @@ func (idx *Index) WriteIndexToJson(w io.Writer) error {
 	}
 	_, err = w.Write(jsonData)
 	return err
+}
+
+func (idx *Index) IsEmpty() bool {
+	return idx == nil || (len(idx.Documents) == 0 && len(idx.IndexMap) == 0)
 }
