@@ -14,24 +14,28 @@ import (
 )
 
 func main() {
+	namef := "index.json"
 	searchKeyword := flag.String("s", "", "Параметр поиска")
 	flag.Parse()
 
-	f, err := os.OpenFile("index.json", os.O_RDWR, 0666)
-	if err != nil {
-		log.Printf("Файл не найден, будет создан новый!")
-	}
-	defer f.Close()
-
 	var index *indexDoc.Index
-	if f != nil {
+	if doesFileExist(namef) {
+		f, err := os.Open(namef)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		defer f.Close()
+
 		indexFF, err := indexDoc.GetIndexFromFile(f)
 		if err != nil {
-			log.Printf("Ошибка чтения файла")
+			log.Println(err)
+			return
 		}
 		err = json.Unmarshal(indexFF, &index)
 		if err != nil {
-			log.Printf("Ошибка преобразования файла")
+			log.Println(err)
+			return
 		}
 	}
 	if index.IsEmpty() {
@@ -41,16 +45,20 @@ func main() {
 		index.AddDocuments(documents)
 		sort.Sort(index)
 
-		f, err := os.Create("index.json")
+		f, err := os.Create(namef)
 		if err != nil {
-			log.Fatal("Ошибка при создании файла:", err)
+			log.Println("Ошибка при создании файла:", err)
+			return
 		}
 		defer f.Close()
+
 		err = index.WriteIndexToJson(f)
 		if err != nil {
-			log.Fatal("ошибка записи файла:", err)
+			log.Println("ошибка записи файла:", err)
+			return
 		}
 	}
+
 	if *searchKeyword != "" {
 		printMatchingURLs(getDocByWord(index, *searchKeyword))
 	}
@@ -88,4 +96,16 @@ func printMatchingURLs(documents []*crawler.Document) {
 			"Title:",
 			doc.Title)
 	}
+}
+
+func doesFileExist(path string) bool {
+	found := false
+	if _, err := os.Stat(path); err != nil {
+		if !os.IsNotExist(err) {
+			log.Println(err)
+		}
+	} else {
+		found = true
+	}
+	return found
 }
