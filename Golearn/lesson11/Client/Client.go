@@ -44,7 +44,7 @@ func main() {
 		var results []URlJson.URLWithTitle
 		err = json.Unmarshal([]byte(response), &results)
 		if err != nil {
-			fmt.Println("Error unmarshaling JSON:", err)
+			log.Println("Error unmarshaling JSON:", err)
 			return
 		}
 
