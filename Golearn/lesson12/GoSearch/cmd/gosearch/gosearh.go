@@ -69,7 +69,14 @@ func printMatchingURLs(documents []*crawler.Document) string {
 	return builder.String()
 }
 func mainHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(`<html><body><h2>Go Simple Web App</h2></body></html>`))
+	w.Write([]byte(`<html><body><h2>Go Web App</h2>`))
+	w.Write([]byte(`<ul>`))
+	w.Write([]byte(`<li><a href="/search">/search</a> - Search for a keyword using the "s" parameter.</li>`))
+	w.Write([]byte(`<li><a href="/doc">/doc</a> - Display a test representation of the documents.</li>`))
+	w.Write([]byte(`<li><a href="/index">/index</a> - Display a test representation of the index.</li>`))
+	w.Write([]byte(`</ul>`))
+	w.Write([]byte(`</body></html>`))
+
 }
 
 func handlerSearch(w http.ResponseWriter, r *http.Request) {
