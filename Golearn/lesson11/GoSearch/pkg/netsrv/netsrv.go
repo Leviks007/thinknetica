@@ -15,7 +15,10 @@ import (
 	indexDoc "lesson11/GoSearch/pkg/index"
 )
 
+var Index *indexDoc.Index
+
 func handler(conn net.Conn) {
+
 	defer conn.Close()
 	defer fmt.Println("Conn closed")
 
@@ -27,14 +30,7 @@ func handler(conn net.Conn) {
 		if err != nil {
 			return
 		}
-
-		urls := getURLs()
-		documents := scanWebsites(urls)
-		index := indexDoc.New()
-		index.AddDocuments(documents)
-		sort.Sort(index)
-
-		answerM := printMatchingURLs(getDocByWord(index, string(msg)))
+		answerM := printMatchingURLs(getDocByWord(Index, string(msg)))
 		answerM = append(answerM, '\n')
 		_, err = conn.Write(answerM)
 		if err != nil {
@@ -45,6 +41,13 @@ func handler(conn net.Conn) {
 }
 
 func StartServer() {
+	urls := getURLs()
+	documents := scanWebsites(urls)
+	Index = indexDoc.New()
+	Index.AddDocuments(documents)
+	sort.Sort(Index)
+	fmt.Println("index update")
+
 	// регистрация сетевой службы
 	listener, err := net.Listen("tcp4", ":8000")
 	if err != nil {
@@ -75,7 +78,7 @@ func scanWebsites(urls []string) []crawler.Document {
 	s := spider.New()
 
 	for _, url := range urls {
-		doc, err := s.Scan(url, 1)
+		doc, err := s.Scan(url, 2)
 		if err != nil {
 			log.Printf("Ошибка при сканировании сайта %s: %v", url, err)
 			continue
