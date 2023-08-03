@@ -17,6 +17,11 @@ var Index *indexDoc.Index
 
 func main() {
 	Index = indexDoc.New()
+	urls := getURLs()
+	documents := scanWebsites(urls)
+	Index.AddDocuments(documents)
+	sort.Sort(Index)
+
 	StartWeb()
 }
 
@@ -69,10 +74,6 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 
 func handlerSearch(w http.ResponseWriter, r *http.Request) {
 	searchParam := r.URL.Query().Get("s")
-	urls := getURLs()
-	documents := scanWebsites(urls)
-	Index.AddDocuments(documents)
-	sort.Sort(Index)
 
 	fmt.Fprintf(w, printMatchingURLs(getDocByWord(Index, searchParam)))
 }
